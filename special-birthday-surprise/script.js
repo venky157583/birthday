@@ -65,8 +65,6 @@ function playAudio(audio) {
     });
   }
 }
-
-
 /* ==================================
    APPLICATION SUBMISSION
 ================================== */
@@ -77,6 +75,15 @@ document.getElementById("applicationForm")
 
   if (!this.reportValidity()) return;
 
+  // Start the song immediately after Submit.
+  if (birthdayMusic) {
+    birthdayMusic.currentTime = 0;
+
+    birthdayMusic.play().catch(() => {
+      console.info("Unable to play music automatically.");
+    });
+  }
+
   applicationPage.classList.add("hidden");
   successPage.classList.add("hidden");
   fireworkScene.classList.remove("hidden");
@@ -85,19 +92,6 @@ document.getElementById("applicationForm")
 
   startFireworkExperience();
 });
-
-
-document.getElementById("continueBtn")
-.addEventListener("click", function() {
-  successPage.classList.add("hidden");
-  fireworkScene.classList.remove("hidden");
-
-  window.scrollTo(0, 0);
-
-  startFireworkExperience();
-});
-
-
 /* ==================================
    FIREWORK CANVAS
 ================================== */
@@ -194,7 +188,6 @@ function burstHeart(x, y) {
     photoCaption.textContent = SETTINGS.photoCaption;
     photoCaption.classList.add("show");
 
-    playAudio(birthdayMusic);
   }, 1500);
 
   setTimeout(() => {
@@ -231,9 +224,7 @@ function animateFirework(now) {
 
       ctx.beginPath();
 
-      ctx.fillStyle =
-        `rgba(255,110,225,${alpha * 0.7})`;
-
+      ctx.fillStyle="rgba(255,110,225," + (alpha * 0.7) + ")";
       ctx.arc(
         rocket.x + (Math.random() - 0.5) * 5,
         rocket.y + i * 7,
@@ -283,11 +274,10 @@ function animateFirework(now) {
     ctx.beginPath();
 
     ctx.fillStyle =
-      `hsla(${p.hue},100%,75%,${Math.max(p.life, 0)})`;
+      "hsla(" + p.hue + ",100%,75%," + Math.max(p.life, 0) + ")";
 
     ctx.shadowColor =
-      `hsl(${p.hue},100%,70%)`;
-
+      "hsl(" + p.hue + ",100%,70%)";
     ctx.shadowBlur = 12;
 
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
